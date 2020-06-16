@@ -10,11 +10,10 @@ jobs:
         name: Build Docker image
         command: docker build -t takumab/node-hello-world-app .
      - run:
-        name: I can run anything
-        command: echo 'hello cherry'
-     - run:
-        name: Run tests inside Docker container
-        command: docker run takumab/node-hello-world-app npm test
+         name: Push image to Docker Hub
+         command: |
+           echo "$DOCKERHUB_PASS" | docker login -u "$DOCKER_NAME" --password-stdin
+           docker push codurance/hello-walking-skeleton-project:${CIRCLE_SHA1}
 
 workflows:
   build_and_test:
