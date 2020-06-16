@@ -14,8 +14,24 @@ jobs:
          command: |
            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKER_NAME" --password-stdin
            docker push codurance/hello-walking-skeleton-project:${CIRCLE_SHA1}
+  sandbox_test:
+     machine:
+       image: ubuntu-1604:202004-01
+       docker_layer_caching: true
+     steps:
+       - run:
+          name: Pull image from Docker Hub
+          command: |
+            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKER_NAME" --password-stdin
+            docker pull codurance/hello-walking-skeleton-project:${CIRCLE_SHA1}
+      - run:
+          name: Run tests
+          command: docker run codurance/hello-walking-skeleton-project:${CIRCLE_SHA1} npm test
 
 workflows:
   build_and_test:
     jobs:
       - sandbox
+      - sandbox_test:
+          requires:
+            - sandbox
