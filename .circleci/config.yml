@@ -24,7 +24,7 @@ jobs:
           command: |
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKER_NAME" --password-stdin
             docker pull codurance/hello-walking-skeleton-project:${CIRCLE_SHA1}
-      - run:
+       - run:
           name: Run tests
           command: docker run codurance/hello-walking-skeleton-project:${CIRCLE_SHA1} npm test
 
