@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  build:
+  sandbox:
     machine:
       image: ubuntu-1604:202004-01
       docker_layer_caching: true
@@ -9,6 +9,9 @@ jobs:
      - run:
         name: Build Docker image
         command: docker build -t takumab/node-hello-world-app .
+     - run:
+        name: I can run anything
+        command: echo 'hello cherry'
      - run:
         name: Run tests inside Docker container
         command: docker run takumab/node-hello-world-app npm test
