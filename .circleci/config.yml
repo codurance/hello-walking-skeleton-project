@@ -12,8 +12,8 @@ jobs:
      - run:
          name: Push image to AWS ECR
          command: |
-           echo "aws ecr get-login-password --region $AWS_REGION" | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-           docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY_NAME:${CIRCLE_SHA1}
+           echo "aws ecr get-login-password --region $AWS_DEFAULT_REGION" | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+           docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_REPOSITORY_NAME:${CIRCLE_SHA1}
   sandbox_test:
      machine:
        image: ubuntu-1604:202004-01
@@ -22,8 +22,8 @@ jobs:
        - run:
           name: Pull image from Docker Hub
           command: |
-            echo "aws ecr get-login-password --region $AWS_REGION" | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-            docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY_NAME:${CIRCLE_SHA1}
+            echo "aws ecr get-login-password --region $AWS_DEFAULT_REGION" | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+            docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_REPOSITORY_NAME:${CIRCLE_SHA1}
        - run:
           name: Run tests
           command: docker run codurance/hello-walking-skeleton-project:${CIRCLE_SHA1} npm test
