@@ -9,10 +9,11 @@ jobs:
      - run:
          name: Build and push docker image to AWS ECR
          command: |
-           docker build -t ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME} .
            alias aws='docker run --rm -e ${AWS_ACCESS_KEY_ID} -e ${AWS_SECRET_ACCESS_KEY} amazon/aws-cli'
            aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
-           docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:${CIRCLE_SHA1}
+           docker build -t hello-walking-skeleton-project .
+           docker tag hello-walking-skeleton-project:latest ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:latest
+           docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:latest
   sandbox_test:
      machine:
        image: ubuntu-1604:202004-01
@@ -21,14 +22,15 @@ jobs:
        - run:
           name: Pull image from Docker Hub
           command: |
-            echo $(aws ecr get-login-password --region $AWS_DEFAULT_REGION) | docker login  \
+            alias aws='docker run --rm -e ${AWS_ACCESS_KEY_ID} -e ${AWS_SECRET_ACCESS_KEY} amazon/aws-cli'
+            aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login  \
             --username AWS \
             --password-stdin \
-            $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
-            docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_REPOSITORY_NAME:${CIRCLE_SHA1}
+            ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
+            docker pull ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:latest
        - run:
           name: Run tests
-          command: docker run codurance/hello-walking-skeleton-project:${CIRCLE_SHA1} npm test
+          command: docker run ${ECR_REPOSITORY_NAME}:latest npm test
 
 workflows:
   build_and_test:
