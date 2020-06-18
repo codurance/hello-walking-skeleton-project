@@ -30,7 +30,7 @@ jobs:
             docker pull ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:${CIRCLE_SHA1}
        - run:
           name: Run tests
-          command: docker run ${ECR_REPOSITORY_NAME}:${CIRCLE_SHA1} npm test
+          command: docker run ${CIRCLE_SHA1} npm test
 
 workflows:
   build_and_test:
