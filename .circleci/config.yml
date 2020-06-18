@@ -20,7 +20,7 @@ jobs:
        docker_layer_caching: true
      steps:
        - run:
-          name: Pull image from Docker Hub
+          name: Pull image from ECR and run tests
           command: |
             alias aws='docker run --rm -e ${AWS_ACCESS_KEY_ID} -e ${AWS_SECRET_ACCESS_KEY} amazon/aws-cli'
             aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login  \
@@ -28,9 +28,7 @@ jobs:
             --password-stdin \
             ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
             docker pull ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:${CIRCLE_SHA1}
-       - run:
-          name: Run tests
-          command: docker run ${CIRCLE_SHA1} npm test
+            docker run ${CIRCLE_SHA1} npm test
 
 workflows:
   build_and_test:
