@@ -19,10 +19,10 @@ jobs:
        image: ubuntu-1604:202004-01
        docker_layer_caching: true
      steps:
+       - aws-cli/setup
        - run:
           name: Pull image from ECR and run tests
           command: |
-            alias aws='docker run --rm -e ${AWS_ACCESS_KEY_ID} -e ${AWS_SECRET_ACCESS_KEY} amazon/aws-cli'
             aws ecr get-login-password | docker login  \
             --username AWS \
             --password-stdin \
