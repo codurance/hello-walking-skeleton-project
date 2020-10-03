@@ -1,6 +1,6 @@
 provider "aws" {
-  profile = "codurance-playground-admin"
-  region = "eu-west-1"
+  profile = "todo-admin"
+  region = "us-east-1"
 }
 
 resource "aws_instance" "example-remove" {
